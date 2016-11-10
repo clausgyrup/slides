@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Calculation of free testosterone</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Calculation of free testosterone">
+  <meta name="author" content="Claus Gyrup Nielsen">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Calculation of free testosterone</h1>
+    <h2>A small handy app</h2>
+    <p>Claus Gyrup Nielsen<br/>Biochemist</p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Introduction</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>This is a presentation about my app which calculates the free concetration of 
+testosterone, given the concentrations of total testosterone and SHBG</li>
+<li>The app has been developed as a part of the Coursera course - Developing Data Products</li>
+</ul>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Abstract</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>Why calculate Free testosterone?</h3>
+
+<ul>
+<li><p>Free testosterone represents the active pool of testosterone in the circulation</p></li>
+<li><p>The concetration can be calculated using the following function which is a solution to a second degree polynomial</p></li>
+</ul>
+
+<pre><code class="r">calc_free&lt;-function(testo,shbg){
+    round((-1*((23.32-testo+shbg)/(2*23.32)))
+          +sqrt(((((23.32-testo+shbg)^2)/((4*(23.32^2)))+testo/(23.32*1)))),4)
+}
+
+calc_free(20,40)
+</code></pre>
+
+<pre><code>## [1] 0.3828
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Calculations</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The calculations are carried out within the <code>reactive</code> statement of the shiny server</p>
+
+<pre><code class="r">shinyServer(function(input, output) {
+  calc_free&lt;-reactive({
+    t&lt;-input$testo
+    s&lt;-input$shbg
+    round((-1*((23.32-t+s)/(2*23.32)))+sqrt(((((23.32-t+s)^2)/((4*(23.32^2)))+t/(23.32*1)))),4)
+  })
+  output$free_t&lt;-renderText({paste(calc_free(),&#39;nmol/l&#39;,sep=&#39; &#39;)})
+})
+</code></pre>
+
+<p>The calculation of free testosterone is carried out as described in <em>Vermeulen A</em> <strong>et.al.</strong> 1999 Clin Endocrin Metab, 84,3666-3672</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Thanks for your attention</h2>
+  </hgroup>
+  <article data-timings="">
+    <h3>The app is available at <a href="https://clausgyrup.shinyapps.io/free_testo">shinyapps.io</a></h3>
+
+<h3>The sourcecode can be downloaded at <a href="https://github.com/clausgyrup/Free_Testo">github</a></h3>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introduction'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Abstract'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Calculations'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Thanks for your attention'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
